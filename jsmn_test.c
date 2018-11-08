@@ -2,10 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "jsmn.h"
-#define MAX_JSON_TOKEN_EXPECTED 128
 
-#define uint32_t unsigned long
-#define int32_t long
+#define MAX_JSON_TOKEN_EXPECTED 128
 
 typedef struct _jf_array
 {
@@ -119,7 +117,7 @@ int main()
 	jsmn_parser jsonParser;
 	static jsmntok_t jsonTokenStruct[MAX_JSON_TOKEN_EXPECTED];
 
-	int32_t tokenCount;
+	int tokenCount;
 
 	char jsonpayload[] = "{\"command\":[{\"a1\":\"b1\",\"a2\":\"b2\"},{\"action\":\"1\",\"value\":\"2\"}],\"act\":[{\"air\":\"1\",\"value\":\"a\"},{\"air\":\"b\",\"qos\":\"c\"}]}";
 
