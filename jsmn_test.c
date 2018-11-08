@@ -88,7 +88,7 @@ jf_array *findTokenArray(const int tokenCount, const char *key, const char *json
 	jsmntok_t *ftok = findToken(key, jsonpayload, token);
 	if (ftok)
 	{
-		//printf("%s: %.*s size=%d\n", key, ftok->end - ftok->start, jsonpayload + ftok->start, ftok->size);
+
 		array->cnt = ftok->size;
 		array->token = malloc(sizeof(jsmntok_t *) * array->cnt);
 		memset(array->token, 0, sizeof(jsmntok_t *) * array->cnt);
@@ -100,14 +100,11 @@ jf_array *findTokenArray(const int tokenCount, const char *key, const char *json
 			if (tok_next->type == JSMN_OBJECT)
 			{
 				array->token[token_found] = tok_next;
-				printf(" %.*s size=%d type=%d\n", tok_next->end - tok_next->start, jsonpayload + tok_next->start, tok_next->size, tok_next->type);
-				//printf("token_next= %p\r\n", tok_next);
-				//printf("token_found=%d\r\n", token_found);
+
 				token_found++;
 
 				if (token_found > array->cnt)
 				{
-					printf("token_found=%d\r\n", token_found);
 					break;
 				}
 			}
@@ -122,11 +119,9 @@ int main()
 	jsmn_parser jsonParser;
 	static jsmntok_t jsonTokenStruct[MAX_JSON_TOKEN_EXPECTED];
 
-	//    jsmntok_t *aJsonHandler = NULL;
-
 	int32_t tokenCount;
 
-	char jsonpayload[] = "{\"command\":[{\"a1\":\"b1\",\"a2\":\"b2\"},{\"action\":\"1\",\"value\":\"2\"}],\"act\":[{\"airb\":\"1\",\"value\":\"a\"},{\"air\":\"b\",\"qos\":\"c\"}]}";
+	char jsonpayload[] = "{\"command\":[{\"a1\":\"b1\",\"a2\":\"b2\"},{\"action\":\"1\",\"value\":\"2\"}],\"act\":[{\"air\":\"1\",\"value\":\"a\"},{\"air\":\"b\",\"qos\":\"c\"}]}";
 
 	int payloadLen = strlen(jsonpayload);
 
@@ -134,20 +129,19 @@ int main()
 
 	tokenCount = jsmn_parse(&jsonParser, jsonpayload, (int)payloadLen, jsonTokenStruct, MAX_JSON_TOKEN_EXPECTED);
 
-	printf("tokenCount=%ld\n", tokenCount);
 	jf_array *array = findTokenArray(tokenCount, "act", jsonpayload, jsonTokenStruct);
-
-	for (int j = 0; j < array->cnt; j++)
+	if (array)
 	{
-		printf("j =%d ,array->cnt=%d array ptr=%p\r\n", j, array->cnt, array->token[j]);
-		jsmntok_t *token = findToken("air", jsonpayload, array->token[j]);
-		if (token)
+		for (int j = 0; j < array->cnt; j++)
 		{
-			//printf("found air token\r\n");
-			printf("air=%.*s \n", token->end - token->start, jsonpayload + token->start);
+
+			jsmntok_t *token = findToken("air", jsonpayload, array->token[j]);
+			if (token)
+			{
+				printf("air=%.*s \n", token->end - token->start, jsonpayload + token->start);
+			}
 		}
 	}
-
 	if (array)
 		jf_free_array(array);
 	return 0;
